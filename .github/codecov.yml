@@ -1,0 +1,17 @@
+# https://docs.codecov.com/docs/codecovyml-reference
+coverage:
+    range: 90..100
+    status:
+        project:
+            default:
+                threshhold: 1%
+
+ignore:
+    - "bench"
+    - "examples"
+    - "tests"
+
+comment:
+    layout: "diff,files"
+    require_changes: true
+    

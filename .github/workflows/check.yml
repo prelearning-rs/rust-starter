@@ -1,0 +1,94 @@
+name: check
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    name: nightly -> fmt
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          components: rustfmt
+      - name: Run cargo fmt --check
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: fmt --check
+  clippy:
+    runs-on: ubuntu-latest
+    name: nightly -> clippy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: clippy
+      - name: Run clippy
+        uses: prelearning-rs/actions/clippy@v1
+  doc:
+    runs-on: ubuntu-latest
+    name: nightly -> doc
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+      - name: Run cargo doc
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: --cfg docsrs
+  hack:
+    runs-on: ubuntu-latest
+    name: nightly -> hack check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-nightly
+          safe-if: false
+      - name: Run cargo hack
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: hack check --feature-powerset --all-targets
+          install: cargo-hack
+  msrv:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        msrv: [1.59.0]
+    name: ubuntu / ${{ matrix.msrv }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install ${{ matrix.msrv }}
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.msrv }}
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Run cargo check
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: check

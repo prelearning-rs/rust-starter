@@ -1,0 +1,29 @@
+# https://github.com/Swatinem/rust-cache
+name: cargo cache
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  cache:
+    runs-on: ubuntu-latest
+    name: ubuntu / nightly / cache
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-nightly
+      - name: Run cargo build
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: build
