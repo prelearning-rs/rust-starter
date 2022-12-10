@@ -67,15 +67,13 @@ jobs:
       - name: Run cargo hack
         uses: prelearning-rs/actions/cargo@v1
         with:
-          command: hack check --feature-powerset --all-targets --no-dev-deps
+          command: hack check --feature-powerset --all-targets
           install: cargo-hack
   msrv:
     runs-on: ubuntu-latest
-    # we use a matrix here just because env can't be used in job names
-    # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
     strategy:
       matrix:
-        msrv: [1.57.0]
+        msrv: [1.59.0]
     name: ubuntu / ${{ matrix.msrv }}
     steps:
       - name: Checkout repository
