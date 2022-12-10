@@ -66,7 +66,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ubuntu-nightly
-          safe-if: false
+          save-if: false
       - name: Run cargo hack
         uses: prelearning-rs/actions/cargo@v1
         with:

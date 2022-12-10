@@ -23,7 +23,12 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ubuntu-nightly
+      - name: Install required cargo tools
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: metadata
+          install: cargo-hack
       - name: Run cargo build
         uses: prelearning-rs/actions/cargo@v1
         with:
-          command: build
+          command: build --workspace
