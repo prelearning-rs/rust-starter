@@ -23,15 +23,24 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     name: nightly -> clippy
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, nightly]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install nightly
+      - name: Install ${{ matrix.toolchain }}
         uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: ${{ matrix.toolchain }}
           components: clippy
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-${{ matrix.toolchain }}
+          save-if: false
       - name: Run clippy
         uses: prelearning-rs/actions/clippy@v1
   doc:
@@ -76,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        msrv: [1.59.0]
+        msrv: [1.64.0]
     name: ubuntu / ${{ matrix.msrv }}
     steps:
       - name: Checkout repository

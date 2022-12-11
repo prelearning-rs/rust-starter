@@ -12,9 +12,20 @@ categories = []
 
 publish.workspace = true
 
+[features]
+
 [dependencies]
 
 [dev-dependencies]
+arbtest = { workspace = true }
+arbitrary = { workspace = true }
+k9 = { workspace = true }
+ntest = { workspace = true }
+loom = { workspace = true }
+
+tracing = { workspace = true }
+color-eyre = { workspace = true }
+thiserror = { workspace = true }
 
 [build-dependencies]
 
