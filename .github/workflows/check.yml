@@ -1,8 +1,8 @@
 name: check
+
 on:
-  push:
-    branches: [main]
   pull_request:
+
 jobs:
   fmt:
     runs-on: ubuntu-latest

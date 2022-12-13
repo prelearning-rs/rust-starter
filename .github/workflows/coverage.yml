@@ -1,0 +1,23 @@
+name: coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: xd009642/tarpaulin:latest
+      options: --security-opt seccomp=unconfined
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Generate coverage
+        run: |
+          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --run-types Doctests --run-types Tests --out Xml
+      - name: Upload coverage to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
