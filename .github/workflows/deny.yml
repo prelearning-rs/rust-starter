@@ -27,8 +27,3 @@ jobs:
         with:
           command: deny check
           install: cargo-deny
-      - name: Run cargo audit
-        uses: prelearning-rs/actions/cargo@v1
-        with:
-          command: audit
-          install: cargo-audit

@@ -27,7 +27,7 @@
 ##   tests/
 [workspace]
 members = [
-    "example"
+    "example",
 ]
 resolver = "2"
 
