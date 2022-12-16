@@ -12,35 +12,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: true
-      - name: Install nightly
+      - name: Enable debug symbols
+        run: sudo apt install llvm
+      - name: Install stable
         uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: nightly
-          default: true
-      - run: |
-            # to get the symbolizer for debug symbol resolution
-            sudo apt install llvm
-        name: Enable debug symbols
-      - name: cargo test -Zsanitizer=address
-        uses: actions-rs/cargo@v1
+          profile: minimal
+      - name: Run cargo test -Zsanitizer=address
+        uses: prelearning-rs/actions/cargo@v1
         with:
-          command: test
-          # only --lib --tests b/c of https://github.com/rust-lang/rust/issues/53945
-          args: --lib --tests --all-features --target x86_64-unknown-linux-gnu
+          command: test --tests --all-features --target x86_64-unknown-linux-gnu
         env:
           ASAN_OPTIONS: "detect_odr_violation=0:detect_leaks=0"
           RUSTFLAGS: "-Z sanitizer=address"
-      - name: cargo test -Zsanitizer=leak
-        if: always()
-        uses: actions-rs/cargo@v1
+      - name: Run cargo test -Zsanitizer=leak
+        uses: prelearning-rs/actions/cargo@v1
         with:
-          command: test
-          args: --all-features --target x86_64-unknown-linux-gnu
+          command: test --all-features --target x86_64-unknown-linux-gnu
         env:
-          LSAN_OPTIONS: "suppressions=lsan-suppressions.txt"
           RUSTFLAGS: "-Z sanitizer=leak"
   miri:
     runs-on: ubuntu-latest

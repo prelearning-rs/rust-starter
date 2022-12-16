@@ -3,7 +3,6 @@
 
 pnpm lint-staged
 
-cargo deny check
-cargo audit
+cargo +nightly deny check
 
 cargo +nightly clippy --workspace

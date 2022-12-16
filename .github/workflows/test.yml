@@ -59,4 +59,3 @@ jobs:
         with:
           command: test
           args: --locked --all-features --all-targets
-          
