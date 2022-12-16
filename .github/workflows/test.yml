@@ -29,26 +29,6 @@ jobs:
         uses: prelearning-rs/actions/cargo@v1
         with:
           command: test --locked --all-features --all-targets
-  minimal:
-    name: ubuntu / stable -> -Zminimal-versions
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Install nightly
-        uses: prelearning-rs/actions/setup-rust@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-      - name: Run cargo update -Zminimal-versions
-        uses: prelearning-rs/actions/cargo@v1
-        with:
-          command: update -Zminimal-versions
-      - name: Run cargo test
-        uses: prelearning-rs/actions/cargo@v1
-        with:
-          command: test --all-features --all-targets
-
   os-check:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} / stable
