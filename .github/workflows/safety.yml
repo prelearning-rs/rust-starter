@@ -23,6 +23,7 @@ jobs:
         uses: prelearning-rs/actions/cargo@v1
         with:
           command: test --tests --all-features --target x86_64-unknown-linux-gnu
+          toolchain: nightly
         env:
           ASAN_OPTIONS: "detect_odr_violation=0:detect_leaks=0"
           RUSTFLAGS: "-Z sanitizer=address"
@@ -30,6 +31,7 @@ jobs:
         uses: prelearning-rs/actions/cargo@v1
         with:
           command: test --all-features --target x86_64-unknown-linux-gnu
+          toolchain: nightly
         env:
           RUSTFLAGS: "-Z sanitizer=leak"
   miri:
