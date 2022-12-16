@@ -30,7 +30,7 @@ jobs:
         uses: prelearning-rs/actions/cargo@v1
         with:
           command: metadata
-          install: cargo-hack
+          install: cargo-hack,cargo-deny,cargo-audit
       - name: Run cargo build
         uses: prelearning-rs/actions/cargo@v1
         with:

@@ -1,80 +1,54 @@
-on:
-  # push:
-  #   branches: [main]
-  pull_request:
 name: test
+
+on:
+  pull_request:
+
 jobs:
-  required:
-    runs-on: ubuntu-latest
-    name: ubuntu / ${{ matrix.toolchain }}
+  test:
+    name: ${{ matrix.os }} / ${{ matrix.toolchain }} / test
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        toolchain: [stable, beta]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        toolchain: [stable]
+        include:
+          - os: ubuntu-latest
+            toolchain: beta
+          - os: ubuntu-latest
+            toolchain: nightly
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Install ${{ matrix.toolchain }}
-        uses: actions-rs/toolchain@v1
+        uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
-          default: true
-      - name: cargo generate-lockfile
-        if: hashFiles('Cargo.lock') == ''
-        uses: actions-rs/cargo@v1
+      - name: Run cargo test --locked
+        uses: prelearning-rs/actions/cargo@v1
         with:
-          command: generate-lockfile
-      # https://twitter.com/jonhoo/status/1571290371124260865
-      - name: cargo test --locked
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --locked --all-features --all-targets
-        env: # set this explicitly so integration tests will run
-          FAKTORY_URL: tcp://127.0.0.1:7419
-    services:
-      faktory:
-        image: contribsys/faktory:latest
-        ports:
-          - 7419:7419
-          - 7420:7420
+          command: test --locked --all-features --all-targets
   minimal:
+    name: ubuntu / stable -> -Zminimal-versions
     runs-on: ubuntu-latest
-    name: ubuntu / stable / minimal-versions
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-      - name: Install stable
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-      - name: Install nightly for -Zminimal-versions
-        uses: actions-rs/toolchain@v1
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install nightly
+        uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
           toolchain: nightly
-      - name: cargo update -Zminimal-versions
-        uses: actions-rs/cargo@v1
+      - name: Run cargo update -Zminimal-versions
+        uses: prelearning-rs/actions/cargo@v1
         with:
-          command: update
-          toolchain: nightly
-          args: -Zminimal-versions
-      - name: cargo test
-        uses: actions-rs/cargo@v1
+          command: update -Zminimal-versions
+      - name: Run cargo test
+        uses: prelearning-rs/actions/cargo@v1
         with:
-          command: test
-          args: --locked --all-features --all-targets
-        env: # set this explicitly so integration tests will run
-          FAKTORY_URL: tcp://127.0.0.1:7419
-    services:
-      faktory:
-        image: contribsys/faktory:latest
-        ports:
-          - 7419:7419
-          - 7420:7420
+          command: test --all-features --all-targets
+
   os-check:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} / stable
