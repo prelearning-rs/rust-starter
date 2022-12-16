@@ -12,15 +12,25 @@ concurrency:
 jobs:
   coverage:
     runs-on: ubuntu-latest
-    container:
-      image: xd009642/tarpaulin:latest-nightly
-      options: --security-opt seccomp=unconfined
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Generate coverage
-        run: |
-          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --run-types Tests --out Xml
+      - name: Install stable
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: llvm-tools-preview
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ubuntu-stable
+          save-if: false
+      - name: Run cargo deny
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: llvm-cov --locked --all-features --lcov --output-path lcov.info
+          install: cargo-llvm-cov
       - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@v3
         with:

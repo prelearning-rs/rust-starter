@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install nightly
+      - name: Install ${{ matrix.toolchain }}
         uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
