@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: 0 0 * * *
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cache:
     runs-on: ubuntu-latest
@@ -17,7 +21,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install nightly
+      - name: Install ${{ matrix.toolchain }}
         uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
@@ -30,7 +34,7 @@ jobs:
         uses: prelearning-rs/actions/cargo@v1
         with:
           command: metadata
-          install: cargo-hack
+          install: cargo-hack,cargo-deny
       - name: Run cargo build
         uses: prelearning-rs/actions/cargo@v1
         with:

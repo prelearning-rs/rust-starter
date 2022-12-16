@@ -14,4 +14,3 @@ ignore:
 comment:
     layout: "diff,files"
     require_changes: true
-    

@@ -1,0 +1,74 @@
+name: safety
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Enable debug symbols
+        run: sudo apt install llvm
+      - name: Install stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+      - name: Run cargo test -Zsanitizer=address
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: test --tests --all-features --target x86_64-unknown-linux-gnu
+          toolchain: nightly
+        env:
+          ASAN_OPTIONS: "detect_odr_violation=0:detect_leaks=0"
+          RUSTFLAGS: "-Z sanitizer=address"
+      - name: Run cargo test -Zsanitizer=leak
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: test --all-features --target x86_64-unknown-linux-gnu
+          toolchain: nightly
+        env:
+          RUSTFLAGS: "-Z sanitizer=leak"
+  miri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - run: |
+          echo "NIGHTLY=nightly-$(curl -s https://rust-lang.github.io/rustup-components-history/x86_64-unknown-linux-gnu/miri)" >> $GITHUB_ENV
+      - name: Install ${{ env.NIGHTLY }}
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ env.NIGHTLY }}
+          default: true
+          components: miri
+      - name: cargo miri test
+        uses: actions-rs/cargo@v1
+        with:
+          command: miri
+          args: test
+        env:
+          MIRIFLAGS: "-Zmiri-tag-raw-pointers -Zmiri-disable-isolation"
+  loom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install stable
+        uses: prelearning-rs/actions/setup-rust@v1
+        with:
+          toolchain: stable
+          profile: minimal
+      - name: Run cargo test --test loom
+        uses: prelearning-rs/actions/cargo@v1
+        with:
+          command: test --release --test loom
+        env:
+          LOOM_MAX_PREEMPTIONS: 3
+          RUSTFLAGS: "--cfg loom"

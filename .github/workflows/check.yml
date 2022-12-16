@@ -3,13 +3,16 @@ name: check
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fmt:
     runs-on: ubuntu-latest
     name: nightly -> fmt
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: Install nightly
         uses: prelearning-rs/actions/setup-rust@v1
         with:

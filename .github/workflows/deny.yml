@@ -1,8 +1,6 @@
-name: coverage
+name: cargo deny
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 concurrency:
@@ -10,28 +8,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  coverage:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: Install stable
         uses: prelearning-rs/actions/setup-rust@v1
         with:
           profile: minimal
           toolchain: stable
-          components: llvm-tools-preview
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: ubuntu-stable
+          shared-key: ubuntu-nightly
           save-if: false
       - name: Run cargo deny
         uses: prelearning-rs/actions/cargo@v1
         with:
-          command: llvm-cov --locked --all-features --lcov --output-path lcov.info
-          install: cargo-llvm-cov
-      - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v3
-        with:
-          fail_ci_if_error: true
+          command: deny check
+          install: cargo-deny

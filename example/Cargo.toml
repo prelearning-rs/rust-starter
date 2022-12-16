@@ -19,7 +19,6 @@ publish.workspace = true
 [dev-dependencies]
 arbtest = { workspace = true }
 arbitrary = { workspace = true }
-k9 = { workspace = true }
 ntest = { workspace = true }
 loom = { workspace = true }
 
