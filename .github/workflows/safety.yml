@@ -63,7 +63,7 @@ jobs:
           command: miri
           args: test
         env:
-          MIRIFLAGS: "-Zmiri-tag-raw-pointers"
+          MIRIFLAGS: "-Zmiri-tag-raw-pointers -Zmiri-disable-isolation"
   loom:
     runs-on: ubuntu-latest
     steps:
