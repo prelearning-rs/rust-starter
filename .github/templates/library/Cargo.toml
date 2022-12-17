@@ -1,5 +1,5 @@
 [package]
-name = "example"
+name = "library"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -10,21 +10,28 @@ repository = ""
 keywords = []
 categories = []
 
-publish.workspace = true
+publish = false
+
+[[bench]]
+name = "bench"
+harness = false
 
 [features]
 
 [dependencies]
+# Logging & Error Handling
+tracing = { workspace = true }
+color-eyre = { workspace = true }
+thiserror = { workspace = true }
 
 [dev-dependencies]
+# Benchmarking
+criterion = { workspace = true }
+# Testing
 arbtest = { workspace = true }
 arbitrary = { workspace = true }
 ntest = { workspace = true }
 loom = { workspace = true }
-
-tracing = { workspace = true }
-color-eyre = { workspace = true }
-thiserror = { workspace = true }
 
 [build-dependencies]
 

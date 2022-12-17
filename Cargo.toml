@@ -1,54 +1,35 @@
-## Workspace recommendations:
-##
-##   1. Do not use wildcard imports
-##
-## Monorepo Layout:
-##
-##   bin/     # Releasable binaries
-##   crates/  # Internal libraries
-##   lib/     # Publishable libraries
-##   vendor/  # Third party dependencies
-##
-##   Example:
-##
-##     lib/some_library/
-##       bench/
-##       examples/
-##       src/
-##       tests/
-##       Cargo.toml
-##
-## Application / Library Layout:
-##
-##   bench/
-##   bin/
-##   examples/
-##   src/
-##   tests/
 [workspace]
 members = [
-    "example",
+    ".github/templates/library"
 ]
 resolver = "2"
 
 [workspace.package]
-authors = ["Stephen Ribich <stephen@ribich.dev>"]
-edition = "2021"
-publish = false
 version = "0.0.0"
 
+authors = []
+edition = "2021"
+
 [workspace.dependencies]
+##############
+# Dependencies
+##############
+# Logging & Error Management
+tracing = "0.1.37"
+tracing-subscriber = "0.3.16"
+color-eyre = "0.6.2"
+thiserror = "1.0.37"
+
+##################
+# Dev Dependencies
+##################
+# Benchmarking
+criterion = "0.4.0"
 # Testing Dependencies
 arbtest = "0.2.0"
 arbitrary = { version = "1.2.0", features = ["derive"] }
 loom = "0.5.6"
 ntest = "0.9.0"
-
-# Logging & Error Management
-tracing = "0.1.37"
-
-color-eyre = "0.6.2"
-thiserror = "1.0.37"
 
 ################################################################################
 ## Dev Profile
