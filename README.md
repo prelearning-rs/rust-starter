@@ -3,6 +3,10 @@
 This repository is used as a project starter and upstream for general
 project-level configurations across the prelearning-rs ecosystem.
 
+## Features
+
+
+
 ## Usage
 
 To use this repository, new projects must be created from its history.
@@ -34,4 +38,4 @@ git merge template/main
 
 ## Acknowledgements
 
-* [Jon Gjengset (jonhoo)](https://github.com/jonhoo) -- The GitHub actions are largely inspired by the actions in their repositories.
+* [Jon Gjengset (jonhoo)](https://github.com/jonhoo) - Actions are largely inspired by the actions in their repositories.
