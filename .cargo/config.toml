@@ -22,14 +22,14 @@ rustflags = [
     "-Aclippy::option_if_let_else",
 
     ##
-    "-Zshare-generics"
+    # "-Zshare-generics"
 ]
 
-[target.'cfg(not(target_arch = "wasm32"))']
+[target.'cfg(and(target_os = "linux", not(target_arch = "wasm32")))']
 rustflags = [
     # Use the mold linker
-    "-Clinker=clang",
-    "-Clink-arg=--ld-path=mold",
+    # "-Clinker=clang",
+    # "-Clink-arg=--ld-path=mold",
 ]
 
 [unstable]
