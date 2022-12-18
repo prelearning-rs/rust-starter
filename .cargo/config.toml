@@ -1,2 +1,36 @@
+[build]
+rustflags = [
+    "-Wclippy::all",
+    "-Wclippy::pedantic",
+    "-Wclippy::nursery",
+    "-Wmissing_docs",
+    "-Wmissing_debug_implementations",
+    "-Wmissing_copy_implementations",
+    "-Wtrivial_casts",
+    "-Wtrivial_numeric_casts",
+    "-Wunsafe_code",
+    "-Wunstable_features",
+    "-Wunused_import_braces",
+    "-Wunused_qualifications",
+    "-Aclippy::missing_const_for_fn",
+    "-Aclippy::must_use_candidate",
+    "-Aclippy::module_name_repetitions",
+    "-Aclippy::redundant_pub_crate",
+
+    # Causes too many false positives when the else clause requires
+    # mut or move semantics.
+    "-Aclippy::option_if_let_else",
+
+    ##
+    "-Zshare-generics"
+]
+
+[target.'cfg(not(target_arch = "wasm32"))']
+rustflags = [
+    # Use the mold linker
+    "-Clinker=clang",
+    "-Clink-arg=--ld-path=mold",
+]
+
 [unstable]
 sparse-registry = true
